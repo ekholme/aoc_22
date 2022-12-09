@@ -15,6 +15,8 @@ m = m[:, pos]
 
 stacks = [Vector{String}(m[:, i]) for i in 1:9]
 
+stacks = filter.(!=(" "), stacks)
+
 #format instructions
 
 function parse_instructs(x)
@@ -25,10 +27,38 @@ inst = parse_instructs.(instructs)
 
 #Part 1
 
-aa = ["a", "b", "c"]
+#pattern -- move 1 from 7 to 6; move 1 from 9 to 4; etc
 
-deleteat!(aa, 1:2)
+for i in eachindex(inst)
+    tmp = reverse(stacks[inst[i][2]][1:inst[i][1]])
 
-aa = vcat(["a", "b"], aa)
+    deleteat!(stacks[inst[i][2]], 1:inst[i][1])
 
-#or do push! for the above
+    stacks[inst[i][3]] = vcat(tmp, stacks[inst[i][3]])
+end
+
+#print out top crates
+for i in eachindex(stacks)
+    println(stacks[i][1])
+end
+
+#Part 2
+
+#need to re-read in our stacks...zzzz
+stacks = [Vector{String}(m[:, i]) for i in 1:9]
+
+stacks = filter.(!=(" "), stacks)
+
+#and then just do the same loop but without reverse()
+for i in eachindex(inst)
+    tmp = stacks[inst[i][2]][1:inst[i][1]]
+
+    deleteat!(stacks[inst[i][2]], 1:inst[i][1])
+
+    stacks[inst[i][3]] = vcat(tmp, stacks[inst[i][3]])
+end
+
+#print out top crates
+for i in eachindex(stacks)
+    println(stacks[i][1])
+end
